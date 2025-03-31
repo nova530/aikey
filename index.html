@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AgentAI Toolkit by Nova</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8f8f8; padding: 20px; }
+    .container { max-width: 700px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    h1 { text-align: center; }
+    .preset-btns button { margin: 5px; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; background-color: #4CAF50; color: white; }
+    textarea { width: 100%; padding: 10px; border-radius: 5px; margin-top: 10px; resize: vertical; }
+    button.send-btn { margin-top: 10px; background-color: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
+    .response-box { margin-top: 20px; padding: 15px; background: #f1f1f1; border-radius: 5px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AgentAI Toolkit by Nova</h1>
+    <div class="preset-btns">
+      <button onclick="setPrompt('listing')">Listing Description</button>
+      <button onclick="setPrompt('email')">Follow-Up Email</button>
+      <button onclick="setPrompt('social')">Social Media Post</button>
+    </div>
+
+    <textarea id="prompt" rows="6" placeholder="Type your prompt or choose one above..."></textarea>
+    <button class="send-btn" onclick="sendToGPT()">Generate with AI</button>
+
+    <div id="response" class="response-box"></div>
+  </div>
+
+  <script>
+    const prompts = {
+      listing: "Write a real estate listing description for a 3-bedroom, 2-bathroom home in San Diego with ocean views and a renovated kitchen.",
+      email: "Write a friendly follow-up email to a buyer named Alex who recently toured a home but hasn't responded.",
+      social: "Write an engaging Facebook post for a new home listing in Austin: 4 bed, 3 bath, pool, $850K."
+    };
+
+    function setPrompt(type) {
+      document.getElementById('prompt').value = prompts[type];
+    }
+
+    async function sendToGPT() {
+      const prompt = document.getElementById('prompt').value;
+      const responseBox = document.getElementById('response');
+      responseBox.textContent = 'Thinking...';
+
+      const result = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
+
+      const data = await result.json();
+      responseBox.textContent = data.response || 'Something went wrong.';
+    }
+  </script>
+</body>
+</html>
